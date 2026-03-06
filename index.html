@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="FSM Editor & Synthesizer Proof of Concept for CircuitVerse — converts finite state machines into digital circuits."
+    />
+    <title>FSM Synthesizer PoC — CircuitVerse</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-green: #42b983;
+        --secondary-green: #026e57;
+        --light-green-bg: #eef7f3;
+        --card-green: #f9fffc;
+        --white: #fff;
+        --grey: #f8fafc;
+        --border-grey: #e5e5e5;
+        --shadow-grey: #d5d5d5;
+        --text-primary: #374151;
+        --text-secondary: #6b7280;
+        --text-muted: #9ca3af;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background: var(--grey);
+        color: var(--text-primary);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* Header */
+      .header {
+        background: var(--white);
+        border-bottom: 1px solid var(--border-grey);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        padding: 14px 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .header-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 4px;
+        background: var(--primary-green);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+      }
+      .header h1 {
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+      .header-sub {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: 1px;
+      }
+      .gh-link {
+        color: var(--text-secondary);
+        padding: 6px;
+      }
+      .gh-link:hover {
+        color: var(--primary-green);
+      }
+
+      /* Main */
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px 24px;
+      }
+
+      /* Hero */
+      .hero {
+        background: var(--white);
+        border: 1px solid var(--border-grey);
+        border-radius: 8px;
+        padding: 40px 32px;
+        text-align: center;
+        margin-bottom: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+      .hero h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .hero h2 span {
+        color: var(--primary-green);
+      }
+      .hero p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        max-width: 600px;
+        margin: 0 auto 24px;
+        line-height: 1.6;
+      }
+      .badge {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 500;
+        padding: 4px 10px;
+        border-radius: 12px;
+        background: var(--light-green-bg);
+        color: var(--secondary-green);
+        border: 1px solid rgba(66, 185, 131, 0.3);
+        margin-bottom: 16px;
+      }
+
+      /* Pipeline */
+      .pipeline {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0;
+        flex-wrap: wrap;
+        margin: 24px 0 0;
+      }
+      .pipe-step {
+        background: var(--card-green);
+        border: 1px solid var(--border-grey);
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-size: 0.82rem;
+        font-weight: 500;
+      }
+      .pipe-arrow {
+        color: var(--primary-green);
+        font-size: 1.2rem;
+        margin: 0 6px;
+      }
+
+      /* Cards grid */
+      .cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      @media (max-width: 700px) {
+        .cards {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--white);
+        border: 1px solid var(--border-grey);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+      .card h3 {
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+      }
+      .card h3 span {
+        color: var(--primary-green);
+      }
+
+      /* File tree */
+      .file-tree {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        line-height: 1.8;
+        color: var(--text-primary);
+      }
+      .file-tree a {
+        color: var(--primary-green);
+        text-decoration: none;
+      }
+      .file-tree a:hover {
+        color: var(--secondary-green);
+        text-decoration: underline;
+      }
+      .ft-dir {
+        color: var(--text-secondary);
+      }
+      .ft-indent {
+        padding-left: 20px;
+      }
+      .ft-indent2 {
+        padding-left: 40px;
+      }
+
+      /* Feature list */
+      .features {
+        list-style: none;
+      }
+      .features li {
+        font-size: 0.85rem;
+        line-height: 1.7;
+        padding: 3px 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .features li::before {
+        content: "●";
+        color: var(--primary-green);
+        font-size: 0.5rem;
+        margin-top: 6px;
+        flex-shrink: 0;
+      }
+
+      /* Architecture */
+      .arch-box {
+        background: var(--white);
+        border: 1px solid var(--border-grey);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        margin-bottom: 20px;
+      }
+      .arch-box h3 {
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-secondary);
+        margin-bottom: 14px;
+      }
+      .arch-flow {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        line-height: 2;
+        color: var(--text-primary);
+        background: var(--grey);
+        border-radius: 6px;
+        padding: 16px 20px;
+        border: 1px solid var(--border-grey);
+      }
+      .arch-flow .highlight {
+        color: var(--primary-green);
+        font-weight: 500;
+      }
+      .arch-flow .arrow {
+        color: var(--text-muted);
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 20px;
+        border-top: 1px solid var(--border-grey);
+        background: var(--white);
+        margin-top: 12px;
+      }
+      .footer p {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+      }
+      .footer a {
+        color: var(--primary-green);
+        text-decoration: none;
+      }
+      .footer a:hover {
+        color: var(--secondary-green);
+      }
+
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 18px;
+        border-radius: 4px;
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: var(--primary-green);
+        color: white;
+        border: 2px solid var(--primary-green);
+      }
+      .btn-primary:hover {
+        background: var(--secondary-green);
+        border-color: var(--secondary-green);
+      }
+      .btn-outline {
+        background: white;
+        color: var(--text-primary);
+        border: 1px solid var(--shadow-grey);
+      }
+      .btn-outline:hover {
+        border-color: var(--primary-green);
+        color: var(--primary-green);
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-brand">
+        <div class="logo">F</div>
+        <div>
+          <h1>FSM Synthesizer PoC</h1>
+          <div class="header-sub">Finite State Machine → Digital Circuit</div>
+        </div>
+      </div>
+      <a
+        href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC"
+        target="_blank"
+        class="gh-link"
+        title="View on GitHub"
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"
+          />
+        </svg>
+      </a>
+    </header>
+
+    <div class="container">
+      <!-- Hero -->
+      <div class="hero">
+        <div class="badge">Proof of Concept</div>
+        <h2>FSM → <span>Circuit</span> Synthesizer</h2>
+        <p>
+          A canvas-based Finite State Machine editor integrated into
+          CircuitVerse that synthesizes FSM definitions into digital logic
+          circuits.
+        </p>
+        <div class="pipeline">
+          <div class="pipe-step">Draw FSM</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step">Define States &amp; Transitions</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step">Synthesize</div>
+          <span class="pipe-arrow">→</span>
+          <div class="pipe-step">Circuit Output</div>
+        </div>
+        <div class="btn-row">
+          <a
+            href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC"
+            target="_blank"
+            class="btn btn-primary"
+          >
+            View Source Code
+          </a>
+          <a
+            href="https://github.com/CircuitVerse/CircuitVerse/tree/feature/fsm-synthesizer-poc"
+            target="_blank"
+            class="btn btn-outline"
+          >
+            Full Branch on CircuitVerse
+          </a>
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="cards">
+        <div class="card">
+          <h3><span>●</span> Key Features</h3>
+          <ul class="features">
+            <li>Canvas-based FSM editor with drag &amp; drop</li>
+            <li>State creation, editing, and deletion</li>
+            <li>Transition drawing with condition labels</li>
+            <li>Undo/redo support for all operations</li>
+            <li>Right-click context menus</li>
+            <li>FSM → digital circuit synthesis</li>
+            <li>Integrated into CircuitVerse simulator</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3><span>●</span> Project Structure</h3>
+          <div class="file-tree">
+            <div class="ft-dir">simulator/src/</div>
+            <div class="ft-indent ft-dir">fsm/</div>
+            <div class="ft-indent2">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsm/FSM.js"
+                >FSM.js</a
+              >
+              — state machine model
+            </div>
+            <div class="ft-indent2">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsm/FSMState.js"
+                >FSMState.js</a
+              >
+              — state nodes
+            </div>
+            <div class="ft-indent2">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsm/FSMTransition.js"
+                >FSMTransition.js</a
+              >
+              — transitions
+            </div>
+            <div class="ft-indent2">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsm/ContextMenu.js"
+                >ContextMenu.js</a
+              >
+              — context menu
+            </div>
+            <div class="ft-indent2">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsm/UndoHistory.js"
+                >UndoHistory.js</a
+              >
+              — undo/redo
+            </div>
+            <div class="ft-indent">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsmEditor.js"
+                >fsmEditor.js</a
+              >
+              — editor UI
+            </div>
+            <div class="ft-indent">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/fsmSynthesizer.js"
+                >fsmSynthesizer.js</a
+              >
+              — synthesis logic
+            </div>
+            <div class="ft-indent">
+              <a
+                href="https://github.com/Git-HimanshuRathi/Fsm-Synthesizer-POC/blob/main/simulator/src/css/fsmEditor.css"
+                >css/fsmEditor.css</a
+              >
+              — styles
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Architecture -->
+      <div class="arch-box">
+        <h3>
+          <span style="color: var(--primary-green)">●</span> Synthesis Pipeline
+        </h3>
+        <div class="arch-flow">
+          <span class="highlight">FSMEditor</span>
+          <span class="arrow">→</span> User draws states &amp; transitions on
+          canvas<br />
+          <span class="highlight">FSM Model</span>
+          <span class="arrow">→</span> Captures state graph (states,
+          transitions, conditions)<br />
+          <span class="highlight">fsmSynthesizer</span>
+          <span class="arrow">→</span> Converts FSM definition to gate-level
+          logic<br />
+          <span class="highlight">CircuitVerse</span>
+          <span class="arrow">→</span> Renders synthesized circuit in the
+          simulator
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Proof of Concept for
+        <a href="https://github.com/CircuitVerse/CircuitVerse" target="_blank"
+          >CircuitVerse</a
+        >
+        · FSM to Circuit Synthesizer
+      </p>
+    </footer>
+  </body>
+</html>
