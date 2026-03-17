@@ -1,19 +1,4 @@
-/**
- * StateEncoder — Converts symbolic state names into binary codes.
- *
- * Given N states, we need ceil(log2(N)) flip-flops to represent them.
- * Each state gets a unique binary code.
- *
- * Example with 3 states:
- *   S0 → 00
- *   S1 → 01
- *   S2 → 10
- *   (11 is unused → becomes don't-care in minimization)
- */
 export class StateEncoder {
-    /**
-     * @param {FSMGraph} fsm - The FSM to encode
-     */
     constructor(fsm) {
         this.fsm = fsm;
         this.encoding = {};   // stateId → binary string (e.g., "01")
@@ -21,10 +6,6 @@ export class StateEncoder {
         this.numStates = fsm.states.length;
     }
 
-    /**
-     * Perform binary (sequential) encoding.
-     * Returns the encoding map.
-     */
     encode() {
         const n = this.numStates;
 
@@ -42,17 +23,10 @@ export class StateEncoder {
         return this.encoding;
     }
 
-    /**
-     * Get the binary code for a state.
-     */
     getCode(stateId) {
         return this.encoding[stateId];
     }
 
-    /**
-     * Get all unused binary codes (these become don't-cares).
-     * E.g., with 3 states and 2 bits, code "11" is unused.
-     */
     getUnusedCodes() {
         const totalCodes = Math.pow(2, this.numBits);
         const usedCodes = new Set(Object.values(this.encoding));
@@ -68,9 +42,6 @@ export class StateEncoder {
         return unused;
     }
 
-    /**
-     * Return a readable summary of the encoding.
-     */
     getSummary() {
         return {
             numStates: this.numStates,

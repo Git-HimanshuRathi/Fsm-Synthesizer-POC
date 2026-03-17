@@ -43,9 +43,6 @@ loadExampleBtn.addEventListener('click', () => {
     loadExample();
 });
 
-/**
- * Run the full synthesis pipeline and display results.
- */
 function runSynthesis() {
     resultsDiv.innerHTML = '';
 
@@ -170,9 +167,6 @@ function runSynthesis() {
     resultsDiv.innerHTML = html;
 }
 
-/**
- * Build variable names array: [Q0, Q1, ..., X0, X1, ...]
- */
 function fn_varNames(encoder, fsm) {
     const names = [];
     for (let i = 0; i < encoder.numBits; i++) {
@@ -184,9 +178,6 @@ function fn_varNames(encoder, fsm) {
     return names;
 }
 
-/**
- * Render a collapsible results section.
- */
 function renderSection(title, content) {
     return `
         <div class="result-section">
@@ -196,9 +187,6 @@ function renderSection(title, content) {
     `;
 }
 
-/**
- * Update the selection/properties panel.
- */
 function updateSelectionPanel() {
     const panel = document.getElementById('selection-panel');
     const sel = editor.getSelection();
@@ -226,9 +214,6 @@ function updateSelectionPanel() {
     }
 }
 
-/**
- * Load a pre-built example FSM (simple 3-state sequence detector).
- */
 function loadExample() {
     // Clear current
     fsm.states = [];

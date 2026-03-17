@@ -1,23 +1,4 @@
-/**
- * BooleanMinimize — Quine-McCluskey algorithm for Boolean minimization.
- *
- * Takes minterms + don't-cares and produces minimized SOP expressions.
- *
- * This is a standalone implementation matching the API used in CircuitVerse:
- *   const result = new BooleanMinimize(numVars, minterms, dontCares);
- *   result.result  // → array of SOP term strings like ["01-1", "1-10"]
- *
- * Each result string has one character per variable:
- *   '0' = variable complemented (NOT)
- *   '1' = variable true
- *   '-' = variable doesn't matter (eliminated)
- */
 export class BooleanMinimize {
-    /**
-     * @param {number}   numVars   - Number of input variables
-     * @param {number[]} minterms  - Array of minterm indices
-     * @param {number[]} dontCares - Array of don't-care indices
-     */
     constructor(numVars, minterms, dontCares = []) {
         this.numVars = numVars;
         this.minterms = minterms;
@@ -25,9 +6,6 @@ export class BooleanMinimize {
         this._result = null;
     }
 
-    /**
-     * Lazy-computed result — only runs the algorithm when first accessed.
-     */
     get result() {
         if (this._result === null) {
             this._result = this._solve();
@@ -35,10 +13,6 @@ export class BooleanMinimize {
         return this._result;
     }
 
-    /**
-     * Run the Quine-McCluskey algorithm.
-     * Returns array of implicant strings.
-     */
     _solve() {
         // All terms to work with (minterms + don't-cares)
         const allTerms = [...this.minterms, ...this.dontCares];
@@ -61,10 +35,6 @@ export class BooleanMinimize {
         return selected;
     }
 
-    /**
-     * Step 1: Find prime implicants by repeatedly combining terms
-     * that differ in exactly one bit.
-     */
     _findPrimeImplicants(terms) {
         // Convert each term to its binary representation
         let currentGroup = terms.map(t => ({
@@ -123,10 +93,6 @@ export class BooleanMinimize {
         return primeImplicants;
     }
 
-    /**
-     * Check if two binary strings differ in exactly one non-dash position.
-     * Returns the position index, or -1 if not exactly one difference.
-     */
     _differByOneBit(a, b) {
         let diffCount = 0;
         let diffPos = -1;
@@ -142,10 +108,6 @@ export class BooleanMinimize {
         return diffCount === 1 ? diffPos : -1;
     }
 
-    /**
-     * Step 2: Select essential prime implicants using a greedy covering approach.
-     * Covers all original minterms (not don't-cares).
-     */
     _selectEssentialImplicants(primeImplicants) {
         const selected = [];
         const uncovered = new Set(this.minterms);
@@ -197,13 +159,6 @@ export class BooleanMinimize {
     }
 }
 
-/**
- * Convert a Quine-McCluskey result string to a human-readable SOP term.
- *
- * @param {string}   implicant  - e.g., "01-1"
- * @param {string[]} varNames   - e.g., ["Q1", "Q0", "X"]
- * @returns {string} - e.g., "Q1'·Q0·X"
- */
 export function implicantToExpression(implicant, varNames) {
     const parts = [];
 
@@ -223,13 +178,6 @@ export function implicantToExpression(implicant, varNames) {
     return parts.length > 0 ? parts.join('·') : '1';
 }
 
-/**
- * Convert an array of implicant strings to a full SOP expression.
- *
- * @param {string[]} implicants - e.g., ["01-1", "1-10"]
- * @param {string[]} varNames   - e.g., ["Q1", "Q0", "X"]
- * @returns {string} - e.g., "Q1'·Q0·X + Q1·Q0'"
- */
 export function toSOPExpression(implicants, varNames) {
     if (implicants.length === 0) return '0';
 

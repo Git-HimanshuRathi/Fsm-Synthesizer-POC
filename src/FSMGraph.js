@@ -1,14 +1,6 @@
 import { FSMState } from './FSMState.js';
 import { FSMTransition } from './FSMTransition.js';
 
-/**
- * FSMGraph — The complete finite state machine model.
- *
- * Holds all states and transitions, and provides methods to
- * add/remove elements and validate the FSM before synthesis.
- *
- * Supports both Moore (outputs on states) and Mealy (outputs on transitions).
- */
 export class FSMGraph {
     constructor() {
         this.type = 'moore';      // 'moore' or 'mealy'
@@ -21,10 +13,6 @@ export class FSMGraph {
 
     // ── State management ────────────────────────────────────────
 
-    /**
-     * Add a new state at position (x, y).
-     * Returns the created state.
-     */
     addState(x, y) {
         const id = `S${this._nextId}`;
         const label = `S${this._nextId}`;
@@ -41,9 +29,6 @@ export class FSMGraph {
         return state;
     }
 
-    /**
-     * Remove a state and all transitions connected to it.
-     */
     removeState(stateId) {
         this.states = this.states.filter(s => s.id !== stateId);
         this.transitions = this.transitions.filter(
@@ -51,65 +36,38 @@ export class FSMGraph {
         );
     }
 
-    /**
-     * Find a state by its ID.
-     */
     getState(stateId) {
         return this.states.find(s => s.id === stateId) || null;
     }
 
-    /**
-     * Set which state is the initial state.
-     * Clears the flag on all other states first.
-     */
     setInitialState(stateId) {
         for (const state of this.states) {
             state.setInitial(state.id === stateId);
         }
     }
 
-    /**
-     * Get the initial state.
-     */
     getInitialState() {
         return this.states.find(s => s.isInitial) || null;
     }
 
     // ── Transition management ───────────────────────────────────
 
-    /**
-     * Add a transition from one state to another.
-     * @param {string} fromId  - source state ID
-     * @param {string} toId    - destination state ID
-     * @param {string} input   - input condition (e.g., "0" or "1")
-     * Returns the created transition.
-     */
     addTransition(fromId, toId, input) {
         const transition = new FSMTransition(fromId, toId, input);
         this.transitions.push(transition);
         return transition;
     }
 
-    /**
-     * Remove a specific transition.
-     */
     removeTransition(index) {
         this.transitions.splice(index, 1);
     }
 
-    /**
-     * Get all transitions leaving a given state.
-     */
     getTransitionsFrom(stateId) {
         return this.transitions.filter(t => t.from === stateId);
     }
 
     // ── Validation ──────────────────────────────────────────────
 
-    /**
-     * Validate the FSM before synthesis.
-     * Returns { valid: boolean, errors: string[], warnings: string[] }
-     */
     validate() {
         const errors = [];
         const warnings = [];
@@ -207,9 +165,6 @@ export class FSMGraph {
 
     // ── Serialization ───────────────────────────────────────────
 
-    /**
-     * Export the FSM as a plain JSON object.
-     */
     toJSON() {
         return {
             type: this.type,

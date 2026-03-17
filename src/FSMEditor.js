@@ -1,21 +1,4 @@
-/**
- * FSMEditor — A minimal canvas-based FSM editor.
- *
- * Interactions:
- *   Double-click canvas  → create a new state
- *   Drag from state      → draw a transition to another state
- *   Click a state        → select it (shows properties panel)
- *   Right-click state    → set as initial / delete
- *   Click a transition   → select it for editing
- *
- * The editor works directly with an FSMGraph instance.
- */
 export class FSMEditor {
-    /**
-     * @param {HTMLCanvasElement} canvas - The canvas element
-     * @param {FSMGraph} fsm            - The FSM model
-     * @param {Function} onUpdate       - Callback when FSM changes
-     */
     constructor(canvas, fsm, onUpdate) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
@@ -65,9 +48,6 @@ export class FSMEditor {
         };
     }
 
-    /**
-     * Double-click → create a new state at that position.
-     */
     _onDoubleClick(e) {
         const pos = this._getMousePos(e);
 
@@ -79,9 +59,6 @@ export class FSMEditor {
         this.render();
     }
 
-    /**
-     * Mouse down → start dragging a state or drawing a transition.
-     */
     _onMouseDown(e) {
         if (e.button !== 0) return; // Left button only
 
@@ -117,9 +94,6 @@ export class FSMEditor {
         this.render();
     }
 
-    /**
-     * Mouse move → drag state or update transition drawing line.
-     */
     _onMouseMove(e) {
         const pos = this._getMousePos(e);
         this.mousePos = pos;
@@ -142,9 +116,6 @@ export class FSMEditor {
         }
     }
 
-    /**
-     * Mouse up → finish drag or create transition.
-     */
     _onMouseUp(e) {
         const pos = this._getMousePos(e);
 
@@ -168,9 +139,6 @@ export class FSMEditor {
         this.render();
     }
 
-    /**
-     * Right-click → context menu for state operations.
-     */
     _onContextMenu(e) {
         e.preventDefault();
         const pos = this._getMousePos(e);
@@ -208,9 +176,6 @@ export class FSMEditor {
 
     // ── Hit testing ─────────────────────────────────────────────
 
-    /**
-     * Check if a point hits any state circle.
-     */
     _hitTestState(pos) {
         for (const state of this.fsm.states) {
             const dx = pos.x - state.x;
@@ -222,10 +187,6 @@ export class FSMEditor {
         return null;
     }
 
-    /**
-     * Check if a point is near any transition arrow.
-     * Returns the transition index or null.
-     */
     _hitTestTransition(pos) {
         for (let i = 0; i < this.fsm.transitions.length; i++) {
             const t = this.fsm.transitions[i];
@@ -439,9 +400,6 @@ export class FSMEditor {
         ctx.fillText(label, x, y);
     }
 
-    /**
-     * Get info about current selection (for the properties panel).
-     */
     getSelection() {
         if (this.selectedState) {
             return { type: 'state', item: this.selectedState };

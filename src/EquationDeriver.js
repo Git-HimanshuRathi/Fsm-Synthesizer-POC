@@ -1,29 +1,10 @@
-/**
- * EquationDeriver — Converts the transition table into Boolean functions.
- *
- * For each output column (next-state bits + output signals), this module
- * extracts the minterms and don't-cares needed for Boolean minimization.
- *
- * The result is an array of functions, each in the form:
- *   { name: "Q0+", minterms: [2, 5], dontCares: [6, 7], numVars: 3 }
- *
- * These can be passed directly to BooleanMinimize (Quine-McCluskey).
- */
 export class EquationDeriver {
-    /**
-     * @param {TransitionTable} table - The built transition table
-     * @param {FSMGraph} fsm          - The FSM (for naming)
-     */
     constructor(table, fsm) {
         this.table = table;
         this.fsm = fsm;
         this.functions = [];  // Array of { name, minterms, dontCares, numVars }
     }
 
-    /**
-     * Derive all Boolean functions from the transition table.
-     * Returns the array of functions.
-     */
     derive() {
         this.functions = [];
 
@@ -58,14 +39,6 @@ export class EquationDeriver {
         return this.functions;
     }
 
-    /**
-     * Extract minterms and don't-cares for a single bit position
-     * in a column (nextState or output).
-     *
-     * @param {Function} getColumn  - function(row) that returns the bit string
-     * @param {number}   bitIndex   - which bit to extract (0 = leftmost)
-     * @param {number}   numVars    - total number of input variables
-     */
     _extractColumn(getColumn, bitIndex, numVars) {
         const minterms = [];
         const dontCares = [];
@@ -86,9 +59,6 @@ export class EquationDeriver {
         return { minterms, dontCares };
     }
 
-    /**
-     * Return a readable summary.
-     */
     getSummary() {
         return this.functions.map(fn => ({
             name: fn.name,

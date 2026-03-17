@@ -1,24 +1,4 @@
-/**
- * TransitionTable — Builds the complete truth table from an encoded FSM.
- *
- * The table has one row for every combination of (current state bits + inputs).
- * Each row contains: current state bits, input bits, next state bits, output bits.
- *
- * Unused state combinations are marked as don't-cares ('X').
- *
- * Example for a 3-state FSM with 2 state bits (Q1,Q0) and 1 input (X):
- *   Q1  Q0  X  | Q1+ Q0+ | Z
- *   0   0   0  |  0   1  | 0
- *   0   0   1  |  0   0  | 0
- *   0   1   0  |  1   0  | 1
- *   ...
- *   1   1   0  |  X   X  | X   ← unused state (don't-care)
- */
 export class TransitionTable {
-    /**
-     * @param {FSMGraph} fsm         - The FSM model
-     * @param {StateEncoder} encoder - The state encoding
-     */
     constructor(fsm, encoder) {
         this.fsm = fsm;
         this.encoder = encoder;
@@ -28,10 +8,6 @@ export class TransitionTable {
         this.numOutputBits = fsm.outputNames.length;
     }
 
-    /**
-     * Build the full transition table.
-     * Returns the array of rows.
-     */
     build() {
         this.rows = [];
 
@@ -99,9 +75,6 @@ export class TransitionTable {
         return this.rows;
     }
 
-    /**
-     * Find the FSM state ID that has the given binary code.
-     */
     _findStateByCode(code) {
         for (const [stateId, stateCode] of Object.entries(this.encoder.encoding)) {
             if (stateCode === code) return stateId;
@@ -109,20 +82,12 @@ export class TransitionTable {
         return null;
     }
 
-    /**
-     * Find the transition from a state that matches the given input.
-     */
     _findTransition(stateId, inputBits) {
         return this.fsm.transitions.find(
             t => t.from === stateId && t.input === inputBits
         ) || null;
     }
 
-    /**
-     * Get output bits for a row.
-     * Moore: outputs come from the CURRENT state
-     * Mealy: outputs come from the TRANSITION
-     */
     _getOutputBits(currentStateId, transition) {
         let bits = '';
 
@@ -142,9 +107,6 @@ export class TransitionTable {
         return bits;
     }
 
-    /**
-     * Return a formatted summary of the table.
-     */
     getSummary() {
         const stateLabels = [];
         for (let i = 0; i < this.numStateBits; i++) {
