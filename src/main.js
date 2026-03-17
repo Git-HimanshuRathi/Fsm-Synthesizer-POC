@@ -165,8 +165,6 @@ function runSynthesis() {
                 </div>
             `).join('')}
         </div>
-        <p class="note">These equations are ready to be implemented as combinational logic gates
-        feeding into D flip-flops — the next step in the full CircuitVerse integration.</p>
     `);
 
     resultsDiv.innerHTML = html;

@@ -204,6 +204,15 @@
         .warning-list li { color: #f39c12; margin: 4px 0; list-style: none; }
         .placeholder { color: #999; font-size: 13px; text-align: center; padding: 20px; }
         .note { font-size: 12px; color: #888; margin-top: 8px; font-style: italic; }
+
+        .shortcuts {
+            font-size: 12px;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 14px;
+        }
     </style>
 </head>
 <body>
@@ -226,6 +235,14 @@
 
             <div class="selection-panel" id="selection-panel">
                 <p class="placeholder">Click a state or transition to see its properties.</p>
+            </div>
+
+            <div class="shortcuts">
+                <strong>Controls:</strong>
+                Double-click → Add state &nbsp;|&nbsp;
+                Shift + Drag → Add transition &nbsp;|&nbsp;
+                Right-click state → Set initial / Delete / Set output &nbsp;|&nbsp;
+                Drag state → Move
             </div>
         </div>
 
